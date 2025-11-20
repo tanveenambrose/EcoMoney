@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" fill="none">
+  <!-- DEFINITIONS FOR GRADIENTS -->
+  <defs>
+    <!-- Silver Coin Gradient -->
+    <linearGradient id="silverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f3f4f6" />
+      <stop offset="50%" stop-color="#9ca3af" />
+      <stop offset="100%" stop-color="#4b5563" />
+    </linearGradient>
+    
+    <!-- Inner Coin Face Gradient -->
+    <linearGradient id="coinFace" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e5e7eb" />
+      <stop offset="100%" stop-color="#9ca3af" />
+    </linearGradient>
+
+    <!-- Leaf Gradient (Emerald) -->
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80" /> <!-- Light Green -->
+      <stop offset="100%" stop-color="#166534" /> <!-- Dark Green -->
+    </linearGradient>
+  </defs>
+
+  <!-- GROUP: THE ICON (Centered) -->
+  <!-- Adjusted Y translation to center it vertically in the new viewBox -->
+  <g transform="translate(100, 30)">
+    
+    <!-- 1. THE COIN (Back Layer) -->
+    <!-- Outer Rim -->
+    <circle cx="100" cy="100" r="80" fill="url(#silverGrad)" stroke="#374151" stroke-width="2"/>
+    <!-- Inner Face -->
+    <circle cx="100" cy="100" r="65" fill="url(#coinFace)" stroke="#6b7280" stroke-width="1"/>
+    
+    <!-- Circuit Lines (Tech Vibe) -->
+    <path d="M 100 100 L 140 60" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="140" cy="60" r="3" fill="#0ea5e9"/>
+    
+    <path d="M 100 130 L 70 130 L 70 110" stroke="#0ea5e9" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="70" cy="110" r="3" fill="#0ea5e9"/>
+
+    <path d="M 130 100 L 150 120" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="150" cy="120" r="3" fill="#0ea5e9"/>
+
+    <!-- Dollar Sign -->
+    <text x="100" y="125" font-family="sans-serif" font-size="80" font-weight="bold" fill="white" text-anchor="middle" opacity="0.9" style="filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));">$</text>
+
+    <!-- 2. THE LEAF (Front Layer) -->
+    <path d="M 100 165 
+             C 60 165, 20 120, 20 80 
+             C 20 20, 100 20, 100 20 
+             C 100 20, 180 50, 120 120 
+             C 110 135, 100 165, 100 165 Z" 
+          fill="url(#leafGrad)" 
+          stroke="#ffffff" 
+          stroke-width="2"
+          filter="drop-shadow(0px 5px 5px rgba(0,0,0,0.2))"
+    />
+    
+    <!-- Leaf Vein -->
+    <path d="M 100 165 C 100 140, 60 80, 100 20" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.4"/>
+  </g>
+</svg>
