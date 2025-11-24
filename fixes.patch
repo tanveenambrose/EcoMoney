@@ -1,0 +1,103 @@
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Left Pie Chart Card */}
+        <div className="animated-border"><Card$1>
+          <div className="animated-border"><Card$1>
+            <h3 className="text-xl font-semibold mb-4">Spending by Category</h3>
+            <div className="flex justify-center">
+              <PieChart width={300} height={300}>
+                <Pie
+                  data={data}
+                  dataKey="value"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={120}
+                  label
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </div>
+          </CardContent>
+        </Card></div>
+
+        {/* Right Transactions */}
+        <div className="animated-border"><Card$1>
+          <div className="animated-border"><Card$1>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold">Recent Transactions</h3>
+              <Button className="flex gap-2 rounded-full bg-green-500 hover:bg-green-600 text-white px-4">
+                <Plus size={18} /> Add
+              </Button>
+            </div>
+
+            <div className="space-y-5">
+              {/* Transaction Item */}
+              <div className="flex items-center justify-between">
+                <div className="bg-green-100 p-3 rounded-xl">
+                  <Wallet className="text-green-600" />
+                </div>
+                <div>
+                  <p className="font-medium">Monthly Salary</p>
+                  <p className="text-gray-500 text-sm">Salary • Nov 1, 2025</p>
+                </div>
+              </div>
+              {/* Rent */}
+=======
+      {/* Middle Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Left Pie Chart Card */}
+        <div className="animated-border rounded-2xl">
+          <Card>
+            <CardContent>
+              <h3 className="text-xl font-semibold mb-4">Spending by Category</h3>
+              <div className="flex justify-center">
+                <PieChart width={300} height={300}>
+                  <Pie
+                    data={data}
+                    dataKey="value"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={120}
+                    label
+                  >
+                    {data.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Transactions */}
+        <div className="animated-border rounded-2xl">
+          <Card>
+            <CardContent>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-semibold">Recent Transactions</h3>
+                <Button className="flex gap-2 rounded-full bg-green-500 hover:bg-green-600 text-white px-4">
+                  <Plus size={18} /> Add
+                </Button>
+              </div>
+
+              <div className="space-y-5">
+                {/* Transaction Item */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-100 p-3 rounded-xl">
+                      <Wallet className="text-green-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Monthly Salary</p>
+                      <p className="text-gray-500 text-sm">Salary • Nov 1, 2025</p>
+                    </div>
+                  </div>
+                  <p className="text-green-600 font-semibold">+৳50,000</p>
+                </div>
+
+                {/* Rent */}

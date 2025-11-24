@@ -1,0 +1,21 @@
+to {
+    --angle: 360deg;
+  }
+}
+
+.animate-rotate-border {
+  animation: rotate linear infinite;
+
+}
+=======
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-rotate-border {
+  animation: rotate 4s linear infinite;
+  transform-origin: center;
+}
