@@ -1,0 +1,5 @@
+<<<<<<< PAGE_TSX_GLOW_DIV
+          <div className="absolute inset-x-0 top-0 m-auto w-full h-full bg-emerald-200 opacity-70 rounded-full blur-3xl -z-10"/> 
+=======
+          <div className="absolute inset-0 m-auto w-[600px] h-[600px] bg-emerald-200 opacity-70 rounded-full blur-3xl -z-10"/> 
+>>>>>>> PAGE_TSX_GLOW_DIV
