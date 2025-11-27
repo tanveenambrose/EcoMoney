@@ -1,22 +1,25 @@
+// 1. Load env vars FIRST before importing anything else
+const dotenv = require('dotenv');
+dotenv.config();
+
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const dotenv = require('dotenv');
+
+// 2. Now import your local files (which depend on env vars)
 const connectDB = require('./config/db.js');
-// const users = require('./routes/userRoute.js');
-
-
-dotenv.config();
+const authRoute = require('./routes/authRoute.js');
 
 const app = express();
 app.use(express.json());
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 connectDB();
 
-app.use(cors({credentials: true, }));
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(cookieParser());
 
+app.use('/api/auth', authRoute);
 
 app.get('/', (req, res) => {
     res.send('API is running....');

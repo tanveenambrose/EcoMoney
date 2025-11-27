@@ -1,0 +1,21 @@
+=======
+import type { Metadata } from "next";
+import AppContextProvider from '@/context/AppContext';
+>>>>>>> REPLACE
+
+<<<<<<< SEARCH
+      >
+        {children}
+      </body>
+    </html>
+  );
+}
+=======
+      >
+        <AppContextProvider>
+          {children}
+        </AppContextProvider>
+      </body>
+    </html>
+  );
+}

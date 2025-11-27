@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
+import AppContextProvider from '@/context/AppContext';
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
+// 1. Import Toastify CSS and Container
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// Ensure this path is correct based on your folder structure
 const scienceGothicFont = localFont({
-  src: '../public/fonts/Science-Gothic.woff2',
+  src: '../public/fonts/Science-Gothic.woff2', 
   weight: '400',
   style: 'normal',
   variable: '--font-science-gothic',
-}) 
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,9 +39,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning={true}
+        className={`${geistSans.variable} ${geistMono.variable} ${scienceGothicFont.variable} antialiased`}
       >
-        {children}
+        <AppContextProvider>
+          {children}
+          {/* 2. Add the ToastContainer here */}
+          <ToastContainer position="top-right" autoClose={3000} />
+        </AppContextProvider>
       </body>
     </html>
   );
