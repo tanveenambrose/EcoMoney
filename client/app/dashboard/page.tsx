@@ -29,6 +29,7 @@ import {
   Plus,
 } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import Navbar from "@/components/Navbar";
 
 const data = [
   { name: "Housing", value: 55, color: "#FF5467" },
@@ -45,6 +46,8 @@ export default function Dashboard() {
   const [open, setOpen] = React.useState(false);
 
   return (
+    <>
+    <Navbar/>
     <div className="w-full p-10 space-y-20">
       {/* Top Summary Cards */}
       <div className="grid  mt-4 md:grid-cols-4 gap-4">
@@ -185,5 +188,6 @@ export default function Dashboard() {
       )}
 
     </div>
+    </>
   );
 }
