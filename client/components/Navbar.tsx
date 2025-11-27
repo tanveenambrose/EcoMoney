@@ -58,7 +58,7 @@ export default function Navbar() {
           {/* 1. PROFILE ICON (Visible on ALL screens) */}
           {/* Sits before Logout (Desktop) and before Menu (Mobile) */}
           <Link href="/profile" className="relative group">
-            <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-slate-100 border-2 border-white shadow-sm overflow-hidden transition-all hover:border-emerald-400 hover:shadow-md flex-shrink-0">
+            <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-slate-100 border-2 border-white shadow-sm overflow-hidden transition-all hover:border-emerald-400 hover:shadow-md shrink-0">
               {/* Replace with your actual user image URL */}
               <img 
                 src="https://i.pravatar.cc/150?img=32" 
