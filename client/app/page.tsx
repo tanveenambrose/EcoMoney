@@ -1,6 +1,8 @@
 'use client'
-import HomePage from '@/app/home/page'
+import React from 'react';
+
 import AppContextProvider from '@/context/AppContext';
+import HomePage from './home/page';
 
 export default function Home() {
   return (
