@@ -1,19 +1,32 @@
 const express = require('express');
 const router = express.Router();
-const { getUser, createUser, updateUser, deleteUser } = require('../controllers/userController');
+const multer = require('multer');
+const userMiddleware = require('../middlewares/userMiddleware');
+const { 
+    getUser, 
+    createUser, 
+    updateUser, 
+    deleteUser, 
+    updateUserProfile, 
+    getUserData 
+} = require('../controllers/userController');
 
-//read / view all users
-router.get('/users',getUser); 
+// Configure Multer to store file locally temporarily
+// Ensure you have a folder named 'uploads' in your server root!
+const upload = multer({ dest: 'uploads/' });
 
-//create a new user
-router.post('/users',createUser);
+// --- Profile Routes ---
 
-//update a user
+// Get current user data
+router.get('/data', userMiddleware, getUserData);
+
+// Update profile (Text + Image)
+router.put('/update-profile', userMiddleware, upload.single('image'), updateUserProfile);
+
+// --- Admin Routes ---
+router.get('/users', getUser); 
+router.post('/users', createUser);
 router.put('/users/:id', updateUser);
-
-
-//delete a user
 router.delete('/users/:id', deleteUser);
-
 
 module.exports = router;

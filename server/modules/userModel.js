@@ -5,6 +5,7 @@ const userSchema = new Schema({
     phoneNo: {type: String, required: true, unique: true},
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
+    image: {type: String, default: 'https://placehold.co/400x400?text=User'},
     createdAt: {type: Date, default: Date.now},
     verifyOtp:{type: String, default: ''},
     verifyOtpExpireAt:{type: Number,default: 0},

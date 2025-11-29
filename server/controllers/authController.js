@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const UserModel = require('../modules/userModel');
 const transporter = require('../config/nodemailer');
 
-// User Registration Cotroller
+// User Registration Controller
 const signUp = async (req, res) => {
     const { name, phoneNo, email, password } = req.body;
     
@@ -62,7 +62,7 @@ const signUp = async (req, res) => {
     }
 };
 
-// User Login Cotroller
+// User Login Controller
 const login = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -113,7 +113,6 @@ const logout = (req, res) => {
 const sendVerificationOtp = async (req, res) => {
     try {
         // userId comes from userMiddleware (req.body.userId) 
-        // OR the frontend body if explicitly sent.
         const { userId } = req.body; 
 
         if(!userId) {
@@ -246,6 +245,33 @@ const resetPassword = async (req, res) => {
     }
 }
 
+// --- UPDATED: Manual Check (No 401 Errors) ---
+const isAuthenticated = async (req, res) => {
+    try {
+        // Manually check token here instead of using userMiddleware
+        // This prevents 401 errors showing up in the browser console for guests
+        const { token } = req.cookies;
+
+        if (!token) {
+            return res.json({ success: false });
+        }
+
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            if (decoded.userId) {
+                return res.json({ success: true });
+            }
+        } catch (e) {
+            return res.json({ success: false });
+        }
+        
+        return res.json({ success: false });
+
+    } catch (error) {
+        return res.json({ success: false, message: error.message });
+    }
+}
+
 module.exports = {
     signUp,
     login,
@@ -253,5 +279,6 @@ module.exports = {
     sendVerificationOtp,
     verifyAccount,
     sendResetPasswordOtp,
-    resetPassword
+    resetPassword,
+    isAuthenticated
 }
