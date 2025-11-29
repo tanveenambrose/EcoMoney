@@ -15,14 +15,9 @@ const scienceGothicFont = localFont({
 export default function Login() {
     const router = useRouter();
 
-    type AppContextType = {
-        backendUrl?: string;
-        isLoggedIn?: boolean;
-        setIsLoggedIn?: (v: boolean) => void;
-        userData?: any;
-        setUserData?: (d: any) => void;
-    };
-    const { backendUrl, setIsLoggedIn, setUserData } = useContext(AppContext) as AppContextType;
+    // 1. Get getUserData from Context
+    // Ensure your AppContext definition includes getUserData
+    const { backendUrl, setIsLoggedIn, setUserData, getUserData } = useContext(AppContext) as any;
 
     const [state, setState] = useState('Login');
     const [name, setName] = useState('');
@@ -50,7 +45,14 @@ export default function Login() {
             } else {
                 toast.success("Login Successful!");
                 setIsLoggedIn?.(true);
-                setUserData?.({ userId: data.userId, email });
+                
+                // --- THE FIX: Fetch user data immediately ---
+                if (getUserData) {
+                    await getUserData();
+                } else {
+                    setUserData?.({ userId: data.userId, email });
+                }
+
                 router.push('/dashboard');
             }
         } catch (err) {
@@ -87,14 +89,20 @@ export default function Login() {
             }
 
             if (!response.ok) {
-                // FIXED: Now showing data.error if available
                 console.error("Server Error Details:", data);
                 const errorMessage = data.error ? `${data.message}: ${data.error}` : data.message;
                 toast.error(errorMessage || 'Sign up failed');
             } else {
                 toast.success("Account created successfully!");
                 setIsLoggedIn?.(true);
-                setUserData?.({ userId: data.userId, email, name, phoneNo });
+                
+                // --- THE FIX: Fetch user data immediately ---
+                if (getUserData) {
+                    await getUserData();
+                } else {
+                    setUserData?.({ userId: data.userId, email, name, phoneNo });
+                }
+
                 router.push('/email-verify');
             }
         } catch (err) {
@@ -125,8 +133,7 @@ export default function Login() {
                                     <img src='/assests/mail_icon.svg' alt="" />
                                     <input
                                         type="email"
-                                        placeholder='Email' className='w-full px-4 py-2 text-center border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent
-                                    border-none'
+                                        placeholder='Email' className='w-full px-4 py-2 text-center border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent border-none text-white'
                                         required
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -136,7 +143,7 @@ export default function Login() {
                                     <img src='/assests/lock_icon.svg' alt="" />
                                     <input
                                         type="password"
-                                        placeholder='Password' className='w-full px-4 py-2 text-center border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 border-none'
+                                        placeholder='Password' className='w-full px-4 py-2 text-center border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 border-none text-white'
                                         required
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -145,7 +152,7 @@ export default function Login() {
                                 <Link href='/reset-password'>
                                     <p className='text-white pt-6 pb-4 hover:text-red-700 text-left cursor-pointer'>Forgot Password ?</p>
                                 </Link>
-                                <button type="submit" disabled={loading} className='w-full mt-3 p-2.5 rounded-full bg-linear-to-br from-indigo-500 to-indigo-900'>
+                                <button type="submit" disabled={loading} className='w-full mt-3 p-2.5 rounded-full bg-linear-to-br from-indigo-500 to-indigo-900 text-white'>
                                     {loading ? 'Loading...' : 'Login'}
                                 </button>
                             </form>
@@ -156,8 +163,7 @@ export default function Login() {
                                     <img src='/assests/person_icon.svg' alt="" />
                                     <input
                                         type="text"
-                                        placeholder='Full Name' className='w-full px-4 py-2 text-center border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent
-                                    border-none'
+                                        placeholder='Full Name' className='w-full px-4 py-2 text-center border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent border-none text-white'
                                         required
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
@@ -167,8 +173,7 @@ export default function Login() {
                                     <img src='/assests/mail_icon.svg' alt="" />
                                     <input
                                         type="email"
-                                        placeholder='Email' className='w-full px-4 py-2 text-center border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent
-                                    border-none'
+                                        placeholder='Email' className='w-full px-4 py-2 text-center border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent border-none text-white'
                                         required
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -178,7 +183,7 @@ export default function Login() {
                                     <img src='/assests/lock_icon.svg' alt="" />
                                     <input
                                         type="password"
-                                        placeholder='Password' className='w-full px-4 py-2 text-center border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 border-none'
+                                        placeholder='Password' className='w-full px-4 py-2 text-center border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 border-none text-white'
                                         required
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -188,8 +193,7 @@ export default function Login() {
                                     <img src='/assests/person_icon.svg' alt="" />
                                     <input
                                         type="text"
-                                        placeholder='Phone No' className='w-full px-4 py-2 text-center border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent
-                                    border-none'
+                                        placeholder='Phone No' className='w-full px-4 py-2 text-center border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent border-none text-white'
                                         required
                                         value={phoneNo}
                                         onChange={(e) => setPhoneNo(e.target.value)}
@@ -198,7 +202,7 @@ export default function Login() {
                                 <Link href='/reset-password'>
                                     <p className='text-white pt-6 pb-4 hover:text-red-700 text-left cursor-pointer'>Forgot Password ?</p>
                                 </Link>
-                                <button type="submit" disabled={loading} className='w-full mt-3 p-2.5 rounded-full bg-linear-to-br from-indigo-500 to-indigo-900'>
+                                <button type="submit" disabled={loading} className='w-full mt-3 p-2.5 rounded-full bg-linear-to-br from-indigo-500 to-indigo-900 text-white'>
                                     {loading ? 'Loading...' : 'Sign Up'}
                                 </button>
                             </form>
@@ -207,14 +211,14 @@ export default function Login() {
 
                     {state === 'Login' ?
                         (
-                            <p className='mt-4'>Don't Have an Account ? {' '}
+                            <p className='mt-4 text-gray-400'>Don't Have an Account ? {' '}
                                 <span onClick={() => setState('Sign Up')} className='text-lg text-blue-400 font-semibold hover:underline cursor-pointer'>
                                     Sign Up
                                 </span>{' '}
                                 here !
                             </p>
                         ) : (
-                            <p className='mt-4'>Already Have an Account ? {' '}
+                            <p className='mt-4 text-gray-400'>Already Have an Account ? {' '}
                                 <span onClick={() => setState('Login')} className='text-lg text-blue-400 font-semibold hover:underline cursor-pointer'>
                                     Login
                                 </span>{' '}

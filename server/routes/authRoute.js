@@ -1,6 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const { signUp, login, logout, sendVerificationOtp, verifyAccount, sendResetPasswordOtp, resetPassword } = require('../controllers/authController');
+const { 
+    signUp, 
+    login, 
+    logout, 
+    sendVerificationOtp, 
+    verifyAccount, 
+    sendResetPasswordOtp, 
+    resetPassword,
+    isAuthenticated // <--- Import this
+} = require('../controllers/authController');
 const userMiddleware = require('../middlewares/userMiddleware');
 
 // Register
@@ -12,16 +21,20 @@ router.post('/login', login);
 // Logout
 router.post('/logout', userMiddleware, logout);
 
-// Send verification otp route (Uses userMiddleware to protect and get user ID)
+// Send verification otp
 router.post('/sendVerificationOtp', userMiddleware, sendVerificationOtp);
 
-// Verify account route (Uses userMiddleware to protect and get user ID)
+// Verify account
 router.post('/verifyAccount', userMiddleware, verifyAccount);
 
-// Send reset password otp route
+// Send reset password otp
 router.post('/sendResetPasswordOtp', sendResetPasswordOtp);
 
-// Reset password route
+// Reset password
 router.post('/resetPassword', resetPassword);
+
+// --- UPDATED ROUTE ---
+// Removed userMiddleware so guests don't trigger a 401 error
+router.get('/is-auth', isAuthenticated);
 
 module.exports = router;
