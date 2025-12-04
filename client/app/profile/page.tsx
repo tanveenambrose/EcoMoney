@@ -128,7 +128,7 @@ const ProfileSettings = () => {
 
   return (
     <div className="min-h-screen bg-[#103b67] flex items-center justify-center p-4 md:p-8 font-sans">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[24px 24px]"></div>
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[24px  24px]"></div>
       <div className="absolute inset-0 bg-linear-to-tr from-indigo-100 via-transparent to-cyan-100 opacity-60"></div>
 
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, type: "spring" }} className="relative w-full max-w-3xl bg-white/70 backdrop-blur-2xl rounded-3xl md:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 overflow-hidden">

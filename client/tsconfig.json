@@ -30,6 +30,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "middlewares/middleware.js", "components/Navbar.jsx"  ],
   "exclude": ["node_modules"]
 }
