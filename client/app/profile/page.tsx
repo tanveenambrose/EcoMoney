@@ -6,23 +6,40 @@ import { Edit2, Lock, Camera, Check, Sparkles, User, Smartphone, Mail } from 'lu
 import { AppContext } from '@/context/AppContext';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+// Import the new modal component
+import SetNewPasswordModal from '@/components/SetNewPasswordModal';
 
-// --- Reusable Editable Component ---
+// --- Reusable Editable Component (Unchanged for Name/Phone) ---
 interface EditableFieldProps {
   label: string;
   value: string;
   icon: React.ReactNode;
   onSave: (newValue: string) => void;
+  // Removed password-specific props as they are no longer needed here
 }
 
-const EditableField: React.FC<EditableFieldProps> = ({ label, value, icon, onSave }) => {
+const EditableField: React.FC<EditableFieldProps> = ({ 
+  label, 
+  value, 
+  icon, 
+  onSave, 
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState(value);
 
-  useEffect(() => { setInputValue(value); }, [value]);
+  useEffect(() => { 
+    setInputValue(value); 
+  }, [value]);
 
-  const handleEditClick = () => { setInputValue(value); setIsEditing(true); };
-  const handleDoneClick = () => { onSave(inputValue); setIsEditing(false); };
+  const handleEditClick = () => { 
+    setInputValue(value); 
+    setIsEditing(true); 
+  };
+
+  const handleDoneClick = () => { 
+      onSave(inputValue); 
+      setIsEditing(false); 
+    };
 
   return (
     <motion.div layout className={`group relative flex items-center justify-between p-3 md:p-4 rounded-2xl transition-all duration-300 ${isEditing ? 'bg-white shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-indigo-100' : 'hover:bg-white/50 border border-transparent'}`}>
@@ -33,7 +50,16 @@ const EditableField: React.FC<EditableFieldProps> = ({ label, value, icon, onSav
           <div className="relative h-7 md:h-8 flex items-center">
             {isEditing ? (
               <div className="relative w-full">
-                <motion.input initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} className="w-full text-base md:text-lg font-bold text-slate-800 bg-transparent focus:outline-none pb-1" autoFocus />
+                <motion.input 
+                  initial={{ opacity: 0, y: 10 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  exit={{ opacity: 0, y: -10 }} 
+                  type="text"
+                  value={inputValue} 
+                  onChange={(e) => setInputValue(e.target.value)} 
+                  className="w-full text-base md:text-lg font-bold text-slate-800 bg-transparent focus:outline-none pb-1" 
+                  autoFocus
+                />
                 <motion.div layoutId="underline" className="absolute bottom-0 left-0 h-0.5 w-full bg-linear-to-r from-indigo-500 to-purple-500" />
               </div>
             ) : (
@@ -65,6 +91,9 @@ const ProfileSettings = () => {
   const [email, setEmail] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  
+  // State to control the new password modal
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -87,7 +116,7 @@ const ProfileSettings = () => {
     const file = e.target.files?.[0];
     if (file) {
       setImageFile(file);
-      setImage(URL.createObjectURL(file)); // Preview immediately
+      setImage(URL.createObjectURL(file));
     }
   };
 
@@ -102,6 +131,8 @@ const ProfileSettings = () => {
       formData.append('userId', userData.userId);
       formData.append('name', name);
       formData.append('phoneNo', phone);
+      // Password is no longer handled here
+      
       if (imageFile) formData.append('image', imageFile);
 
       const response = await fetch(`${backendUrl}/api/user/update-profile`, {
@@ -114,9 +145,7 @@ const ProfileSettings = () => {
 
       if (response.ok) {
         toast.success("Profile Updated!");
-        if (getUserData) await getUserData(); // Refresh Context
-        
-        // Redirect to Dashboard
+        if (getUserData) await getUserData();
         setTimeout(() => router.push('/dashboard'), 500);
       } else {
         toast.error(data.message || "Update failed");
@@ -131,7 +160,7 @@ const ProfileSettings = () => {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[24px  24px]"></div>
       <div className="absolute inset-0 bg-linear-to-tr from-indigo-100 via-transparent to-cyan-100 opacity-60"></div>
 
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, type: "spring" }} className="relative w-full max-w-3xl bg-white/70 backdrop-blur-2xl rounded-3xl md:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 overflow-hidden">
+      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, type: "spring" }} className="relative w-full max-w-3xl bg-white/70 backdrop-blur-2xl rounded-3xl md:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 overflow-hidden z-10">
         <div className="absolute top-0 w-full h-1.5 md:h-2 bg-linear-to-r from-indigo-500 via-purple-500 to-cyan-500"></div>
 
         <div className="relative p-6 md:p-12 flex flex-col md:flex-row gap-8 md:gap-12">
@@ -142,11 +171,10 @@ const ProfileSettings = () => {
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full p-1 bg-linear-to-br from-indigo-500 via-purple-500 to-cyan-500 shadow-xl">
                 <div className="w-full h-full rounded-full overflow-hidden border-4 border-white relative bg-white">
                   <img
-                    // Fix: Add cache buster '?t=' to ensure image updates instantly
                     src={image ? `${image}` : "https://placehold.co/400x400?text=User"}
                     alt="Profile"
                     className="w-full h-full object-cover"
-                    crossOrigin="anonymous" // Fix browser tracking prevention
+                    crossOrigin="anonymous"
                   />
                 </div>
               </div>
@@ -169,17 +197,40 @@ const ProfileSettings = () => {
             <div className="space-y-3 md:space-y-4">
               <EditableField label="Full Name" value={name} icon={<User size={18} className="md:w-5 md:h-5" />} onSave={setName} />
               <EditableField label="Phone Number" value={phone} icon={<Smartphone size={18} className="md:w-5 md:h-5" />} onSave={setPhone} />
+              
+              {/* MODIFIED Password Field - Triggers Modal instead of inline edit */}
+              <div className="group relative flex items-center justify-between p-3 md:p-4 rounded-2xl transition-all duration-300 hover:bg-white/50 border border-transparent">
+                <div className="flex-1 mr-3 md:mr-4 flex items-center gap-3 md:gap-4">
+                    <div className="p-2.5 md:p-3 rounded-xl transition-colors duration-300 bg-indigo-50 text-indigo-500">
+                        <Lock size={18} className="md:w-5 md:h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                    <p className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5 md:mb-1">Password</p>
+                    <div className="relative h-7 md:h-8 flex items-center">
+                        <p className="text-base md:text-lg font-bold text-slate-700 truncate">••••••••••••</p>
+                    </div>
+                    </div>
+                </div>
+                <motion.button 
+                    whileHover={{ scale: 1.05 }} 
+                    whileTap={{ scale: 0.95 }} 
+                    onClick={() => setIsPasswordModalOpen(true)} // Open Modal on click
+                    className="relative flex items-center justify-center gap-2 px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-xs font-bold uppercase tracking-wide rounded-xl transition-all shadow-md overflow-hidden shrink-0 text-indigo-600 bg-white border border-indigo-100 shadow-indigo-100 group-hover:border-indigo-200"
+                >
+                    <Edit2 size={14} /> <span className="hidden sm:inline">Change</span>
+                </motion.button>
+             </div>
+
               <div className="group flex items-center justify-between p-3 md:p-4 rounded-2xl bg-slate-50 border border-slate-100 opacity-80 select-none">
                 <div className="flex-1 mr-4 flex items-center gap-3 md:gap-4">
                   <div className="p-2.5 md:p-3 rounded-xl bg-slate-200 text-slate-400"><Mail size={18} className="md:w-5 md:h-5" /></div>
                   <div className="min-w-0"><p className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5 md:mb-1">Email Address</p><p className="text-base md:text-lg font-bold text-slate-500 font-mono tracking-tight truncate">{email}</p></div>
                 </div>
-                <div className="p-2 bg-slate-200 rounded-lg text-slate-400 shrink-0" title="Locked"><Lock size={16} /></div>
+                <div className="p-2 bg-slate-200 rounded-lg text-slate-400 shrink-0" title="ReadOnly"><Mail size={16} /></div>
               </div>
             </div>
 
-            <div className="pt-6 md:pt-8 flex flex-col-reverse sm:flex-row items-center justify-between gap-6 sm:gap-4">
-              <button className="text-sm font-semibold text-red-400 hover:text-red-500 transition-colors w-full sm:w-auto text-center">Reset Password</button>
+            <div className="pt-6 md:pt-8 flex flex-col-reverse sm:flex-row items-center justify-end gap-6 sm:gap-4">
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
                 <motion.button onClick={() => router.push('/dashboard')} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto px-6 py-3 text-sm font-bold text-slate-500 bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 transition-all">Cancel</motion.button>
                 <motion.button onClick={handleSaveToBackend} whileHover={{ scale: 1.02, boxShadow: "0 10px 25px -5px rgba(79, 70, 229, 0.4)" }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto px-8 py-3 text-sm font-bold text-white bg-linear-to-r from-indigo-600 to-purple-600 rounded-xl shadow-lg hover:shadow-xl transition-all">Save Changes</motion.button>
@@ -188,6 +239,15 @@ const ProfileSettings = () => {
           </div>
         </div>
       </motion.div>
+
+      {/* Render the Password Modal outside the main card flow */}
+      <SetNewPasswordModal 
+        open={isPasswordModalOpen} 
+        onClose={() => setIsPasswordModalOpen(false)}
+        backendUrl={backendUrl}
+        userId={userData?.userId}
+      />
+
     </div>
   );
 };

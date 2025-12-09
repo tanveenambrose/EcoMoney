@@ -1,11 +1,13 @@
 // app/categories/page.tsx
+'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus, Home, BarChart3, ShoppingCart, Laptop, Film, Bus, ShoppingBag, Zap, LucideIcon } from 'lucide-react';
 import CategoryCard from '../../components/CategoryCard';
 import RotatingBorderCard from '../categories/RotatingBorder';
 import AddCategoryModal from '@/components/AddCategoryModal';
 import VerifyPasswordModal from '@/components/VerifyPasswordModal';
+import Navbar from '@/components/Navbar';
 
 // Define the type for a Category object
 interface Category {
@@ -101,7 +103,8 @@ export default function CategoriesPage() {
 
 
   return (
-    // Responsive padding: p-4 for mobile, p-8 for large, max-w-7xl to prevent excessive stretching
+    <>
+    <Navbar/>
     <div className="h-screen w-full bg-gray-900 text-white p-4 sm:p-6 md:p-10 mx-auto ">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 sm:mb-10 border-b border-gray-700 pb-4">
         <div>
@@ -160,5 +163,6 @@ export default function CategoriesPage() {
         ?
       </button>
     </div>
+    </>
   );
 }
