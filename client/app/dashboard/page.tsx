@@ -8,18 +8,18 @@ import {
   TrendingUp,
   TrendingDown,
   PiggyBank,
-  Plus,
 } from "lucide-react";
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import Navbar from "@/components/Navbar";
 import { AppContext } from "@/context/AppContext";
 
+// Updated unique and eye-catching color palette for the pie chart
 const data = [
-  { name: "Housing", value: 55, color: "#FF5467" },
-  { name: "Food", value: 19, color: "#FF8EA1" },
-  { name: "Utilities", value: 12, color: "#FFA5B5" },
-  { name: "Transport", value: 6, color: "#FFBFC8" },
-  { name: "Entertainment", value: 5, color: "#FFA84D" },
+  { name: "Housing", value: 55, color: "#3B82F6" }, // Blue (Primary)
+  { name: "Food", value: 19, color: "#10B981" }, // Emerald (Secondary)
+  { name: "Utilities", value: 12, color: "#F59E0B" }, // Amber
+  { name: "Transport", value: 6, color: "#8B5CF6" }, // Violet
+  { name: "Entertainment", value: 5, color: "#EC4899" }, // Pink
 ];
 
 export default function Dashboard() {
@@ -39,157 +39,162 @@ export default function Dashboard() {
   const earnings = userData?.totalEarnings || 0;
   const spending = userData?.totalSpending || 0;
   const savings = userData?.totalSavings || 0;
-  
+
   // Backend provides this, but we fallback to calculation if needed
   const balance = userData?.totalBalance ?? (earnings - (spending + savings));
 
   return (
     <>
-    <Navbar/>
-    <div className="w-full p-10 space-y-20">
-      {/* Top Summary Cards */}
-      <div className="grid mt-4 md:grid-cols-4 gap-4">
-       
-          <div className="flex items-center gap-3 p-5 rounded-2xl shadow-md border border-blue-200 transition duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-green-400">
-            <div className="bg-green-100 p-3 rounded-xl">
-              <Wallet className="text-green-600" />
+      <Navbar />
+      {/* Main container with responsive padding and a slight background color for better contrast */}
+      <div className="w-full min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8 lg:p-10 space-y-6 md:space-y-10 lg:space-y-20 text-gray-800">
+        
+        {/* Top Summary Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mt-4">
+          
+          {/* Total Balance Card */}
+          <div className="flex items-center gap-4 p-4 sm:p-5 rounded-2xl shadow-sm border border-blue-100 transition duration-300 hover:shadow-md hover:-translate-y-0.5 bg-white">
+            <div className="bg-blue-100 p-3 rounded-xl">
+              <Wallet className="text-blue-600 w-6 h-6 sm:w-7 sm:h-7" />
             </div>
             <div>
-              <p className="text-gray-500 text-sm">Total Balance</p>
-              {/* Display Dynamic Balance */}
-              <h2 className="text-xl font-semibold">৳{balance.toLocaleString()}</h2>
+              <p className="text-gray-500 text-xs sm:text-sm font-medium">Total Balance</p>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-blue-900 truncate">৳{balance.toLocaleString()}</h2>
             </div>
           </div>
-        
 
-        <Card className="rounded-2xl shadow-md border border-teal-200 transition duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-green-400">
-          <CardContent className="p-5 ">
-            <div className="flex items-center gap-3">
-              <div className="bg-green-100 p-3 rounded-xl ">
-                <TrendingUp className="text-green-600" />
-              </div>
-              <div className="">
-                <p className="text-gray-500 text-sm">Total Earnings</p>
-                {/* Display Dynamic Earnings */}
-                <h2 className="text-xl font-semibold">৳{earnings.toLocaleString()}</h2>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl shadow-sm border border-orange-200 transition duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-green-500 ">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-3">
-              <div className="bg-red-100 p-3 rounded-xl">
-                <TrendingDown className="text-red-600" />
-              </div>
-              <div>
-                <p className="text-gray-500 text-sm">Total Spending</p>
-                {/* Display Dynamic Spending */}
-                <h2 className="text-xl font-semibold">৳{spending.toLocaleString()}</h2>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl shadow-sm border border-yellow-200 transition duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-green-500 ">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-3">
-              <div className="bg-green-100 p-3 rounded-xl">
-                <PiggyBank className="text-green-600" />
-              </div>
-              <div>
-                <p className="text-gray-500 text-sm">Total Savings</p>
-                {/* Display Dynamic Savings */}
-                <h2 className="text-xl font-semibold">৳{savings.toLocaleString()}</h2>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Middle Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Left Pie Chart Card */}
-        <RotatingBorderCard>
-        <Card className="rounded-2xl shadow-md h-110 ">
-          <CardContent className="p-6">
-            <h3 className="text-xl font-semibold mb-4 text-orange-500 ">Spending by Category</h3>
-            <div className="flex justify-center">
-              <PieChart width={300} height={300}>
-                <Pie
-                  data={data}
-                  dataKey="value"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={120}
-                  label
-                >
-                  {data.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </div>
-          </CardContent>
-        </Card>
-        </RotatingBorderCard>
-
-        {/* Right Transactions */}
-        <div className="">
-          {/* Recent Transactions */}
-          <Card className="rounded-2xl shadow-sm border border-green-300">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-semibold">Recent Transactions</h3>
-
-                <button
-                  onClick={() => setOpen(true)}
-                   className="px-4 py-1.5 rounded-full text-blue-600 font-medium backdrop-blur-md bg-white/20 
-  border border-white/40 shadow-lg hover:text-green-600 transition">
-                  View All
-                </button>
-              </div>
-
-              <div className="text-center py-10 text-gray-500">
-                No transactions yet
+          {/* Total Earnings Card */}
+          <Card className="rounded-2xl shadow-sm border border-emerald-100 transition duration-300 hover:shadow-md hover:-translate-y-0.5 bg-white">
+            <CardContent className="p-4 sm:p-5">
+              <div className="flex items-center gap-4">
+                <div className="bg-emerald-100 p-3 rounded-xl">
+                  <TrendingUp className="text-emerald-600 w-6 h-6 sm:w-7 sm:h-7" />
+                </div>
+                <div>
+                  <p className="text-gray-500 text-xs sm:text-sm font-medium">Total Earnings</p>
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-emerald-900 truncate">৳{earnings.toLocaleString()}</h2>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Spending by Category */}
-          <Card className="rounded-2xl shadow-sm border border-gray-200 mt-6">
-            <CardContent className="p-6">
-              <h3 className="text-xl font-semibold mb-4">Spending by Category</h3>
+          {/* Total Spending Card */}
+          <Card className="rounded-2xl shadow-sm border border-rose-100 transition duration-300 hover:shadow-md hover:-translate-y-0.5 bg-white">
+            <CardContent className="p-4 sm:p-5">
+              <div className="flex items-center gap-4">
+                <div className="bg-rose-100 p-3 rounded-xl">
+                  <TrendingDown className="text-rose-600 w-6 h-6 sm:w-7 sm:h-7" />
+                </div>
+                <div>
+                  <p className="text-gray-500 text-xs sm:text-sm font-medium">Total Spending</p>
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-rose-900 truncate">৳{spending.toLocaleString()}</h2>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-              <div className="text-center py-10 text-gray-500">
-                No expenses yet
+          {/* Total Savings Card */}
+          <Card className="rounded-2xl shadow-sm border border-amber-100 transition duration-300 hover:shadow-md hover:-translate-y-0.5 bg-white">
+            <CardContent className="p-4 sm:p-5">
+              <div className="flex items-center gap-4">
+                <div className="bg-amber-100 p-3 rounded-xl">
+                  <PiggyBank className="text-amber-600 w-6 h-6 sm:w-7 sm:h-7" />
+                </div>
+                <div>
+                  <p className="text-gray-500 text-xs sm:text-sm font-medium">Total Savings</p>
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-amber-900 truncate">৳{savings.toLocaleString()}</h2>
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
-      </div>
 
-      {/* ------ MODAL ------ */}
-      {open && (
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-2xl w-[400px] shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">All Transactions</h2>
+        {/* Middle Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+          
+          {/* Left Pie Chart Card */}
+          <RotatingBorderCard>
+            <Card className="rounded-2xl shadow-sm h-full min-h-[400px] sm:min-h-[450px] bg-white">
+              <CardContent className="p-4 sm:p-6 h-full flex flex-col">
+                <h3 className="text-lg sm:text-xl font-bold mb-4 text-gray-900 text-center sm:text-left">Spending by Category</h3>
+                <div className="grow flex justify-center items-center">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={data}
+                        dataKey="value"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius="80%"
+                        label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
+                        labelLine={false}
+                      >
+                        {data.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} stroke="#fff" strokeWidth={2} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                        itemStyle={{ color: '#374151', fontWeight: 500 }}
+                        formatter={(value: number) => [`${value}%`, 'Percentage']}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </RotatingBorderCard>
 
-            <p className="text-gray-500 mb-6 ">You have no transactions yet.</p>
+          {/* Right Transactions Section */}
+          <div className="flex flex-col gap-6">
+            
+            {/* Recent Transactions Card */}
+            <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900">Recent Transactions</h3>
+                  <button
+                    onClick={() => setOpen(true)}
+                    className="px-4 py-1.5 rounded-full text-blue-600 text-xs sm:text-sm font-semibold bg-blue-50 border border-blue-100 hover:bg-blue-100 hover:text-blue-700 transition-colors"
+                  >
+                    View All
+                  </button>
+                </div>
+                <div className="text-center py-8 sm:py-10 text-gray-400 text-sm sm:text-base font-medium">
+                  No transactions yet
+                </div>
+              </CardContent>
+            </Card>
 
-            <button
-              onClick={() => setOpen(false)}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-            >
-              Close
-            </button>
+            {/* Spending by Category (List View) Card */}
+            <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white grow">
+              <CardContent className="p-4 sm:p-6 h-full">
+                <h3 className="text-lg sm:text-xl font-bold mb-6 text-gray-900">Spending Breakdown</h3>
+                <div className="text-center py-8 sm:py-10 text-gray-400 text-sm sm:text-base font-medium">
+                  No expenses yet
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      )}
 
-    </div>
+        {/* ------ MODAL ------ */}
+        {open && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+            <div className="bg-white p-5 sm:p-6 rounded-2xl w-full max-w-md shadow-xl mx-4">
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 text-gray-900">All Transactions</h2>
+              <p className="text-gray-500 mb-8 text-sm sm:text-base">You have no transactions yet.</p>
+              <button
+                onClick={() => setOpen(false)}
+                className="bg-gray-900 text-white px-4 py-2.5 rounded-xl hover:bg-gray-800 font-semibold text-sm sm:text-base w-full transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
+      </div>
     </>
   );
 }

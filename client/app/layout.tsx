@@ -1,20 +1,11 @@
 import type { Metadata } from "next";
-import AppContextProvider from '@/context/AppContext';
 import { Geist, Geist_Mono } from "next/font/google";
+// Adjust path if your font is elsewhere
 import localFont from "next/font/local";
 import "./globals.css";
-
-// 1. Import  CSS and Container
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-// Font Configurations
-const scienceGothicFont = localFont({
-  src: '../public/fonts/Science-Gothic.woff2', 
-  weight: '400',
-  style: 'normal',
-  variable: '--font-science-gothic',
-});
+import { ThemeProvider } from "@/context/ThemeContext";
+// Assuming you have this
+import AppContextProvider from "@/context/AppContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,9 +17,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Adjust path as needed
+const scienceGothic = localFont({
+  src: "../public/fonts/Science-Gothic.woff2",
+  variable: "--font-science-gothic",
+});
+
 export const metadata: Metadata = {
   title: "Eco Money",
-  description: "Money Tracking App",
+  description: "Manage your finances with ease.",
 };
 
 export default function RootLayout({
@@ -37,17 +34,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      {/* suppressHydrationWarning={true} fixes the "bis_skin_checked" extension error */}
+    // suppressHydrationWarning is vital for next-themes
+    <html lang="en" suppressHydrationWarning>
       <body
-        suppressHydrationWarning={true}
-        className={`${geistSans.variable} ${geistMono.variable} ${scienceGothicFont.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${scienceGothic.variable} antialiased`}
       >
-        <AppContextProvider>
-          {children}
-          {/* ToastContainer handles the popup notifications globally */}
-          <ToastContainer position="top-right" autoClose={3000} />
-        </AppContextProvider>
+        {/* attribute="class" tells next-themes to toggle the 'dark' class on the <html> element.
+          defaultTheme="system" sets the initial theme based on the user's system preference.
+          enableSystem allows it to respond to system changes.
+        */}
+        <ThemeProvider>
+          <AppContextProvider>
+            {children}
+          </AppContextProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

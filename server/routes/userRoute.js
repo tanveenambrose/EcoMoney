@@ -8,7 +8,8 @@ const {
     updateUser, 
     deleteUser, 
     updateUserProfile, 
-    getUserData 
+    getUserData,
+    changePassword // <-- Import the new controller
 } = require('../controllers/userController');
 
 const upload = multer({ dest: 'uploads/' });
@@ -16,6 +17,9 @@ const upload = multer({ dest: 'uploads/' });
 // --- Profile Routes ---
 router.get('/data', userMiddleware, getUserData);
 router.put('/update-profile', userMiddleware, upload.single('image'), updateUserProfile);
+// Add new route for changing password. Must be POST for security.
+router.post('/change-password', userMiddleware, changePassword); 
+
 
 // --- Admin Routes ---
 router.get('/users', getUser); 

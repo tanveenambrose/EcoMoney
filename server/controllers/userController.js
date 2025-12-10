@@ -1,5 +1,10 @@
 const UserModel = require('../modules/userModel');
 const cloudinary = require('cloudinary').v2;
+// Import bcrypt for password hashing and comparison
+const bcrypt = require('bcryptjs');
+// Import transporter for sending emails (ensure ../config/nodemailer exists based on your authController context)
+const transporter = require('../config/nodemailer');
+
 
 // 1. Get Logged In User Data
 const getUserData = async (req, res) => {
@@ -100,6 +105,60 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
+// 3. Change Password Controller (NEW)
+const changePassword = async (req, res) => {
+    try {
+        // userId is injected by userMiddleware
+        const { userId, currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ success: false, message: 'Please provide both current and new passwords' });
+        }
+
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // 1. Verify that currentPassword matches the DB password hash
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ success: false, message: 'The current password you entered is incorrect.' });
+        }
+
+        // 2. Hash the new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // 3. Update user password in DB
+        user.password = hashedPassword;
+        await user.save();
+
+        // 4. Send Email Notification with the new password
+        try {
+            const mailOptions = {
+                from: process.env.SENDER_EMAIL,
+                to: user.email,
+                subject: 'Security Alert: Your Password changed successfully',
+                text: `Dear ${user.name},\n\nYour password has been successfully changed.\n\nThe new password is: ${newPassword}\n\nIf you did not perform this action, please secure your account immediately.`
+            };
+            // We don't await this so the response is faster, email sends in background
+            transporter.sendMail(mailOptions).catch(err => console.error("Email send failed", err));
+            
+        } catch (emailError) {
+            console.error("Password change email error:", emailError);
+            // We still return success to frontend because the password WAS changed, just email failed.
+        }
+
+        res.json({ success: true, message: 'Password changed successfully' });
+
+    } catch (error) {
+        console.error("Change password error:", error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+
 // ... Admin functions ...
 const getUser = async (req, res) => { try { const users = await UserModel.find(); res.status(200).json(users); } catch (error) { res.status(500).json({ message: error.message }); } };
 const createUser = async (req, res) => { try { const user = new UserModel(req.body); const savedUser = await user.save(); res.status(201).json(savedUser); } catch (error) { res.status(400).json({ message: error.message }); } };
@@ -112,5 +171,6 @@ module.exports = {
     updateUser,
     deleteUser,
     updateUserProfile,
-    getUserData 
+    getUserData,
+    changePassword // <-- Export the new controller
 };

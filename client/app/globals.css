@@ -1,31 +1,41 @@
 @import "tailwindcss";
 
+
+/* Tell Tailwind to use the '.dark' class on the html element for dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
+  /* Light mode colors */
   --background: #ffffff;
   --foreground: #171717;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+
+  /* Font variables */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-science: var(--font-science-gothic);
 }
 
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Dark mode overrides applied when the 'dark' class is present on the html element */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 body {
-  background: var(--background);
+  /* Apply the variables to the body */
+  background-color: var(--background);
   color: var(--foreground);
   
-  font-family:'Poppins', Arial, Helvetica, sans-serif !important;
+  /* Set default font family */
+  font-family: 'Poppins', Arial, Helvetica, sans-serif, var(--font-sans);
+  
+  /* Smooth transition for theme changes */
+  transition-property: color, background-color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
 }
 
-
+/* ... other custom styles ... */
 :root {
   --angle: 0deg;
 }
@@ -37,12 +47,7 @@ body {
 }
 
 .animate-rotate-border {
-   animation: rotate 5s linear infinite;
-  transform-style:initial-preserve-3d;
-  backface-visibility: hidden; 
+  animation: rotate 5s linear infinite;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
-
-
-
-
-

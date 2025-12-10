@@ -9,16 +9,13 @@ import Button from './ui/button';
 interface SetNewPasswordModalProps {
   open: boolean;
   onClose: () => void;
-  // You might need to pass backendUrl and user token here if handling API call directly
-  backendUrl?: string; 
-  userId?: string;
+  backendUrl: string; // backendUrl is now required for the API call
 }
 
 const SetNewPasswordModal: React.FC<SetNewPasswordModalProps> = ({
   open,
   onClose,
   backendUrl,
-  userId
 }) => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -38,47 +35,49 @@ const SetNewPasswordModal: React.FC<SetNewPasswordModalProps> = ({
   }
 
   const handleSubmit = async () => {
-    // 1. Basic Validation
+    // 1. Frontend Validation: Check empty fields
     if (!currentPassword || !newPassword || !confirmPassword) {
       toast.error("Please fill in all fields.");
       return;
     }
 
+    // 2. Frontend Validation: Check if new password matches confirm password
     if (newPassword !== confirmPassword) {
       toast.error("New passwords do not match.");
       return;
     }
 
+    // 3. Frontend Validation: Length check
     if (newPassword.length < 6) {
         toast.warn("Password should be at least 6 characters long.");
-        // Keep going, but warn. Or return to stop.
+        // You can choose to return here if you want to enforce this strictly
     }
 
     setIsLoading(true);
 
     try {
-        // --- API CALL SIMULATION ---
-        // Replace this block with your actual API call to change the password.
-        // You usually need to send { userId, currentPassword, newPassword }
-        /*
+        // 4. API Call to backend
         const response = await fetch(`${backendUrl}/api/user/change-password`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId, currentPassword, newPassword }),
+            credentials: 'include', // Crucial: Sends the httpOnly cookie for auth
+            body: JSON.stringify({ currentPassword, newPassword }),
         });
+
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message || "Failed to change password");
-        */
 
-        // Simulate network request delay for demo purposes
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        if (!response.ok || !data.success) {
+            // If backend returns an error status or success:false
+            throw new Error(data.message || "Failed to change password");
+        }
 
-        // If successful:
-        toast.success("Password successfully changed!");
+        // 5. Success handling
+        toast.success(data.message || "Password changed successfully!");
         handleClose();
 
     } catch (error: any) {
-        toast.error(error.message || "An error occurred.");
+        // 6. Error handling
+        toast.error(error.message || "An error occurred while changing password.");
     } finally {
         setIsLoading(false);
     }
